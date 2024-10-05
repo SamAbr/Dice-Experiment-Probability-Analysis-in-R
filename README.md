@@ -1,4 +1,4 @@
-# 🎲 Dice Probability Distribution Analysis 🎲
+# 🎲 Dice Experiment Probability Analysis 🎲
 
 ## Overview
 Welcome to the **Dice Probability Distribution Analysis** project! Ever wondered about the fascinating probabilities behind rolling two dice? In this project, we delve into the world of dice and analyze various random variables like:
