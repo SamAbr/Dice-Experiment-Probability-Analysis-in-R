@@ -1,0 +1,200 @@
+---
+title: "Rolling Dice: Probability Fun in R"
+author: "By Samuel Abrha G.mariam"
+date: "2024-03-22"
+output: html_document
+---
+
+# Experiment: Rolling a die twice
+
+A fair die is tossed twice. Let d1 = value of die on roll 1 and d2 = value of die on roll 2. Let X = d1 + d2, the sum of the faces; Y = max{d1, d2}, the maximum of the two faces; and Z = \|d1 − d2\| and W = X × Z\
+\* Generate the sample space for the values of X,Y,Z, and W\
+\* Generate the probability distribution tables for X,Y,Z, and W\
+\* Determine the following probabilities :
+
+-   P(X ≤ 5)
+
+-   P(Y ≥ 3)
+
+-   P(Z ≠ 0)
+
+## Sample space of the experiment
+
+The experiment's sample space will consist of 36 elements, which equals 6 raised to the power of 2. Let's create these elements using the expand.grid function.
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+#Possible outcomes of a roll
+outcomes <- c(1, 2, 3, 4, 5, 6)
+#Sample space of the experiment
+sample_space <- expand.grid("D1"=outcomes, "D2"=outcomes)
+sample_space
+```
+
+## The sample space, outcomes, and probability distribution table of x
+
+The random variable $X$ represents the sum of the faces of two dice ($X = D1 + D2$). As our experiment has 36 possible outcomes, $X$ will also have 36 possible outcomes, although there may be duplicates. The sample space consists of the unique values of $X$, and I refer to all 36 values of $X$ as the outcomes of $X$. To assist in understanding the probability distribution table, I am generating the outcomes of $X$, the sample space of$x$, and the table.
+
+In the given code snippet below, we are calculating the values of the random variable $X$ (which represents the sum of the faces of two dice) for each outcome of the experiment, including duplicates. The code calculates the sum of the values in the "D1" and "D2" columns of the "sample_space" data frame and stores the results in the "outcomes_x" variable. Since the experiment has 36 possible outcomes, including duplicates, there will be 36 values in the "outcomes_x" variable, each corresponding to a different outcome of the experiment.
+
+```{r}
+outcomes_x <- sample_space$D1 + sample_space$D2
+#Values of x for each outcome of the experiment(including duplicates) which are 36
+outcomes_x
+```
+
+In the next code, we create a new variable named "sample_space_x" by extracting unique values from the "outcomes_x" variable. This step ensures that "sample_space_x" contains only unique values of the random variable $X$, eliminating any duplicates that may have been present in "outcomes_x". The resulting "sample_space_x" variable represents the sample space of $X$, containing unique outcomes of the experiment.
+
+```{r}
+sample_space_x <- unique(outcomes_x)
+
+sample_space_x
+```
+
+In the upcoming code, we intend to create a probability distribution table for X. To begin, we establish a dataframe by passing the outcomes of X. Utilizing the `count()` function, we ascertain the frequency of each unique value of X in the dataframe. Following this, we employ the `mutate()` function to compute the probabilities (p(X)) by dividing the counts (n) by the total count of all X values. Finally, we eliminate the count column (n) to focus exclusively on the probabilities corresponding to different values of X.
+
+```{r}
+df_x <- data.frame(x=outcomes_x)
+df_x_final= df_x %>% 
+  count(x)
+prob_d_x<- df_x_final %>% 
+  mutate("p(x)"=n/sum(df_x_final$n)) %>% 
+  select(-n)
+prob_d_x
+
+```
+
+## The sample space, outcomes, and probability distribution table of y
+
+$Y$ represents the maximum value between two dice faces ($Y = max{d1, d2}$). To calculate this, we will utilize the pmax function to find the element-wise maximum between the D1 and D2 columns in the sample space. Similar to how I handled $x$, I'll provide the 36 outcomes of $Y$ along with the sample space.
+
+Here, we will be calculating the outcomes for the random variable $Y$, which represents the maximum value between the faces of two dice. The code uses the `pmax()` function to compare the values in the "D1" and "D2" columns of the "sample_space" data frame and selects the maximum value for each pair. The resulting "outcomes_y" variable contains the outcomes of the random variable $Y$, representing the maximum value obtained from each pair of dice faces.
+
+```{r}
+outcomes_y <- pmax(sample_space$D1, sample_space$D2)
+outcomes_y
+```
+
+Next, we are taking the unique values from the "outcomes_y" field and putting them into a new variable called "sample_space_y". Using this step, duplicates that might have existed in "outcomes_y" are removed and only unique values of the random variable $Y$ are present in "sample_space_y". The variable "sample_space_y" that is produced symbolizes the sample space of $Y$, which includes the experiment's distinct results.
+
+```{r}
+sample_space_y <- unique(outcomes_y)
+sample_space_y
+```
+
+In the forthcoming code, our goal is to create a probability distribution table for Y. To start, we construct a dataframe by passing outcomes of y. Employing the `count()` function, we determine the frequency of each unique value of Y in the dataframe. Subsequently, we utilize the `mutate()` function to calculate the probabilities (p(Y)) by dividing the counts (n) by the total count of all Y values. Lastly, we remove the count column (n) to concentrate solely on the probabilities associated with different values of Y.
+
+```{r}
+df_y <- data.frame(y=outcomes_y)
+df_y_final= df_y%>% 
+  count(y)
+prob_d_y<- df_y_final %>% 
+  mutate("p(y)"=n/sum(df_y_final$n)) %>% 
+  select(-n)
+prob_d_y
+```
+
+## The sample space, outcomes, and probability distribution table of Z
+
+For $Z$, which is defined as the absolute difference between d1 and d2 ($Z = |d1 − d2|$, we will use the abs function to calculate the absolute value of the difference between the D1 and D2 columns.
+
+The following code calculates the outcomes for the random variable $Z$, representing the absolute difference between two dice faces, by comparing the values in the "D1" and "D2" columns of the sample_space data frame.
+
+```{r}
+outcomes_z <- abs(sample_space$D1 - sample_space$D2)
+
+outcomes_z
+```
+
+The following code is for generating a new variable called "sample_space_z" by selecting distinct values from the "outcomes_z" variable. This process ensures that "sample_space_z" contains only unique outcomes of the random variable $Z$, removing any duplicated values that might have existed in "outcomes_z". Consequently, "sample_space_z" represents the sample space for $Z$ and includes exclusively unique outcomes from the experiment.
+
+```{r}
+sample_space_z <- unique(outcomes_z)
+
+sample_space_z
+```
+
+In the following code, we aim to construct a probability distribution table for Z. We begin by creating a dataframe that computes the absolute difference between the outcomes of D1 and D2. Using the `count()` function, we determine the frequency of each unique value of Z in the dataframe. Subsequently, we apply the `mutate()` function to calculate the probabilities (p(Z)) by dividing the counts (n) by the total count of all Z values. Finally, we remove the count column (n) to focus solely on the probabilities associated with different values of Z.
+
+```{r}
+df_z <- data.frame(z=outcomes_z)
+df_z_final= df_z%>% 
+  count(z)
+prob_d_z<- df_z_final %>% 
+  mutate("p(z)"=n/sum(df_z_final$n)) %>% 
+  select(-n)
+prob_d_z
+```
+
+## The sample space, outcomes, and probability distribution table of W
+
+The variable $W$ represents the product of the corresponding random variables $X$ and $Z$ ($W = X × Z$. There are $36$ possible outcomes for $W$ because there are 36 possible outcomes for both $X$ and $Z$, and each combination of $X$ and $Z$ results in a unique outcome for $W$. However, out of these 36 outcomes, only 16 are unique, leading to a sample space with $16$ elements.
+
+Here,we will be generating outcomes for the random variable $W$, which is calculated as the product of the outcomes of the random variables $X$ and $Z$.
+
+```{r}
+outcomes_w <- outcomes_x * outcomes_z
+
+outcomes_w
+```
+
+Then, we are creating a new variable named "sample_space_w" by sorting and extracting unique values from the "outcomes_w" variable. This process ensures that "sample_space_w" contains only unique values of the random variable $W$, arranged in ascending order. The resulting "sample_space_w" variable represents the sample space of $W$, containing unique outcomes of the experiment.
+
+```{r}
+sample_space_w <- sort(unique(outcomes_w))
+
+sample_space_w
+```
+
+The following code will be used to create a probability distribution table for W. We will construct a dataframe by multiplying the outcomes of X and Z. Subsequently, we will utilize the count function, followed by the mutate function to establish p(W). Finally, we will eliminate the column representing counts (n).
+
+```{r}
+outcomes <- data.frame(w= outcomes_x * outcomes_z)
+w_n <- outcomes %>% 
+  count(w)
+
+prob_dist_w <- w_n %>% 
+  mutate("p(w)"=n/sum(w_n$n)) %>% 
+  select(-n)
+
+prob_dist_w
+```
+
+## Determine the probability of P(X ≤ 5)
+
+Here, we are calculating the probability of $X$ being less than or equal to five. We first filter the probability distribution table for $X$ to include only values less than or equal to five, then sum the probabilities corresponding to those values to get the overall probability of $X$ being less than or equal to five.
+
+```{r}
+xLessThanOrEqualToFive <- prob_d_x %>% 
+  filter(x<=5)
+
+ProbXLessThanOrEqualToFive <- sum(xLessThanOrEqualToFive$`p(x)`)
+
+ProbXLessThanOrEqualToFive
+```
+
+## Determine the probability of P(Y ≥ 3)
+
+We follow the same process to calculate the probability of $Y$ being greater than or equal to three. We first filter the probability distribution table for $Y$ to include only values greater than or equal to three, then sum the probabilities corresponding to those values to get the overall probability of $Y$ being greater than or equal to three.
+
+```{r}
+yGreaterThanOrEqualToThree <- prob_d_y %>% 
+  filter(y>=3)
+
+ProbYGreaterThanOrEqualToThree <- sum(yGreaterThanOrEqualToThree$`p(y)`)
+
+ProbYGreaterThanOrEqualToThree
+```
+
+## Determine the probability of P(Z ≠ 0)
+
+We, again, follow the same process to calculate the probability of $Z$ being different from zero. We filter the probability distribution table for $Z$ to include only values that are not equal to zero, then sum the probabilities corresponding to those values to get the overall probability of $Z$ being different from zero.
+
+```{r}
+zDifferentFromZero <- prob_d_z %>% 
+  filter(z!=0)
+
+ProbZDifferentFromZero <- sum(zDifferentFromZero$`p(z)`)
+
+ProbZDifferentFromZero
+```
